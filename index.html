@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenserp Google Image Search</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('https://images.pexels.com/photos/259915/pexels-photo-259915.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f8f8;
+    }
+
+    .header {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      color: #333;
+    }
+
+    .search-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #searchTerm {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 300px;
+      margin-right: 10px;
+    }
+
+    #searchButton {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4285f4;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #searchButton:hover {
+      background-color: #357ae8;
+    }
+
+    #imageResults {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .result-image {
+      width: 200px;
+      height: auto;
+      margin: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+
+    .result-image:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Google Image Search with Zenserp API</h1>
+  </div>
+  <div class="search-container">
+    <input type="text" id="searchTerm" placeholder="Enter search term">
+    <button id="searchButton">Search</button>
+  </div>
+  <div id="imageResults"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const apiKey = 'YOURAPIKEY';
+      const searchButton = document.getElementById('searchButton');
+      const searchTermInput = document.getElementById('searchTerm');
+      const imageResultsDiv = document.getElementById('imageResults');
+
+      searchButton.addEventListener('click', function () {
+        const searchTerm = searchTermInput.value;
+        if (searchTerm) {
+          const apiUrl = `https://app.zenserp.com/api/v2/search?apikey=${apiKey}&q=${searchTerm}&tbm=isch`;
+
+          fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+              const imageResults = data.image_results;
+              if (imageResults && imageResults.length > 0) {
+                imageResultsDiv.innerHTML = '';
+
+                imageResults.forEach(image => {
+                  const imgElement = document.createElement('img');
+                  imgElement.src = image.sourceUrl;
+                  imgElement.alt = 'Image';
+                  imgElement.classList.add('result-image');
+
+                  imageResultsDiv.appendChild(imgElement);
+                });
+              } else {
+                imageResultsDiv.innerHTML = 'No results found.';
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
